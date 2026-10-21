@@ -1,4 +1,4 @@
-# doc-mng | Página Moderna de Documentación
+# DOCS-MNG | Página Moderna de Documentación
 
 Plataforma web ligera para la centralización, lectura y gestión de documentación técnica en tiempo real. Diseñada para ofrecer una experiencia de lectura fluida con soporte nativo de Markdown y almacenamiento local persistente.
 
@@ -28,6 +28,6 @@ doc-mng/
 │   ├── docs/      # Archivos de documentación escritos en .md
 │   ├── img/       # Capturas, diagramas y recursos visuales
 ├── style.css      # Variables de diseño, temas y estilos del visor
-├── app.js         # Variables de diseño, temas y estilos del visor
+├── app.js         # Lógica de filtrado, historial y renderizado
 ├── index.html     # Estructura principal y maquetación de la aplicación
 └── README.md      # Documentación general del repositorio
