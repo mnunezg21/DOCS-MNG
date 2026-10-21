@@ -31,3 +31,14 @@ doc-mng/
 ├── app.js         # Lógica de filtrado, historial y renderizado
 ├── index.html     # Estructura principal y maquetación de la aplicación
 └── README.md      # Documentación general del repositorio
+```
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+### Frontend
+- **HTML5:** Marcado semántico y estructura de vistas (catálogo y lector).
+- **CSS3:** Variables CSS nativas, efectos de difuminado (*glassmorphism*), diseño responsivo con CSS Grid y Flexbox.
+- **JavaScript:** Manipulación reactiva del DOM, filtrado dinámico de búsqueda en memoria y gestión de eventos de navegación.
+
