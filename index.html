@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>doc-mng</title>
+  <link rel="icon" href="assets/img/logo-web.jpg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- Librería para convertir Markdown a HTML en el cliente -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+  <!-- Topbar con figuras y difuminado -->
+  <header class="topbar">
+    <div class="background-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
+    <div class="topbar-content">
+      <!-- Botón de menú (solo visible en móvil) -->
+      <button id="menu-toggle" class="menu-toggle" type="button"
+              aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar">☰</button>
+      <img src="assets/img/logo-web.jpg" alt="" class="logo-img" onerror="this.remove()">
+      <h1 class="logo" id="logo-home">DOCS-MNG</h1>
+      <span class="badge">Docs Hub</span>
+
+      <nav class="main-nav" aria-label="Navegación principal">
+        <button type="button" class="nav-link active" data-view="catalog">
+          <span class="nav-long">Documentación</span><span class="nav-short">Docs</span>
+        </button>
+        <button type="button" class="nav-link" data-view="contact">Contacto</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Fondo oscuro tras el menú lateral en móvil -->
+  <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+  <div class="layout">
+
+    <!-- Menú desplegable para móvil -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="search-box">
+        <label for="search-title">Buscar por Título</label>
+        <input type="text" id="search-title" placeholder="Ej. Git, CSS, Netlify...">
+      </div>
+
+      <div class="search-box">
+        <label for="search-content">Buscar en Contenido</label>
+        <input type="text" id="search-content" placeholder="Ej. branch, flexbox, token...">
+      </div>
+
+      <hr class="divider">
+
+      <section class="menu-section">
+        <h3>Archivos Recomendados</h3>
+        <ul id="recommended-list" class="doc-list"></ul>
+      </section>
+
+      <section class="menu-section">
+        <h3>Últimos Visitados</h3>
+        <ul id="recent-list" class="doc-list">
+          <li class="empty-msg">No has visitado ningún documento aún.</li>
+        </ul>
+      </section>
+
+      <hr class="divider">
+
+      <section class="menu-section">
+        <h3>¿Echas algo en falta?</h3>
+        <div class="sidebar-cta">
+          <button type="button" class="btn-secondary" data-action="contact" data-kind="request">Solicitar documentación</button>
+          <button type="button" class="btn-secondary" data-action="contact" data-kind="doubt">Tengo una duda</button>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- Área principal (catálogo, lector Markdown o contacto) -->
+    <main class="content-area">
+
+      <section id="catalog-view">
+        <div class="content-header">
+          <h2 id="main-heading">Catálogo de Documentos</h2>
+          <span id="doc-count"></span>
+        </div>
+        <div id="docs-grid" class="docs-grid"></div>
+      </section>
+
+      <section id="doc-reader" class="doc-reader" style="display: none;">
+        <button id="btn-back" class="btn-back">← Volver al catálogo</button>
+        <article id="markdown-body" class="markdown-body"></article>
+      </section>
+
+      <!-- Vista de contacto -->
+      <section id="contact-view" class="contact-view" style="display: none;">
+        <div class="content-header">
+          <h2>Contacto</h2>
+        </div>
+
+        <div class="contact-card">
+          <form id="contact-form" novalidate>
+
+            <!-- Barra deslizante: Solicitud / Duda -->
+            <div class="segmented" role="radiogroup" aria-label="Tipo de mensaje">
+              <input type="radio" name="kind" id="kind-request" value="request" checked>
+              <input type="radio" name="kind" id="kind-doubt" value="doubt">
+              <span class="segmented-thumb" aria-hidden="true"></span>
+              <label for="kind-request">Solicitar documentación</label>
+              <label for="kind-doubt">Dudas sobre documentación</label>
+            </div>
+            <p id="kind-hint" class="hint"></p>
+
+            <div class="field">
+              <label for="contact-subject">Asunto</label>
+              <div class="subject-group">
+                <span id="subject-prefix" class="subject-prefix">[Solicitud]</span>
+                <input type="text" id="contact-subject" maxlength="100" autocomplete="off" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="contact-message">Descripción</label>
+              <textarea id="contact-message" rows="6" maxlength="3000" required></textarea>
+              <span class="counter" id="msg-counter">0 / 3000</span>
+            </div>
+
+            <div class="field">
+              <label for="contact-email">Tu correo electrónico</label>
+              <input type="email" id="contact-email" autocomplete="email" placeholder="tucorreo@ejemplo.com" required>
+              <small class="hint">Te enviaremos un código para comprobar que el correo es tuyo.</small>
+            </div>
+
+            <!-- Campo trampa para bots -->
+            <div class="hp" aria-hidden="true">
+              <label>Web <input type="text" id="contact-website" tabindex="-1" autocomplete="off"></label>
+            </div>
+
+            <label class="check">
+              <input type="checkbox" id="contact-privacy" required>
+              <span>He leído y acepto la <a href="#" data-legal="privacidad">Política de privacidad</a>.</span>
+            </label>
+
+            <!-- Paso de verificación -->
+            <div id="verify-box" class="verify-box" hidden>
+              <p id="verify-text"></p>
+              <input type="text" id="contact-code" inputmode="numeric" maxlength="6"
+                     autocomplete="one-time-code" placeholder="000000" aria-label="Código de verificación">
+              <button type="button" id="btn-resend" class="btn-link" disabled>Reenviar código</button>
+            </div>
+
+            <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+
+            <button type="submit" id="btn-submit" class="btn-primary">Enviar y verificar correo</button>
+          </form>
+
+          <!-- Mensaje de éxito -->
+          <div id="contact-success" class="contact-success" hidden>
+            <div class="success-icon">✓</div>
+            <h3>¡Mensaje enviado!</h3>
+            <p>Hemos recibido tu mensaje. Te responderemos al correo que has indicado en cuanto sea posible.</p>
+            <button type="button" class="btn-primary" data-action="catalog">Volver a la documentación</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Pie de página -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="assets/img/logo-web.jpg" alt="" class="logo-img" onerror="this.remove()">
+          <strong>DOCS-MNG</strong>
+        </div>
+        <p>Documentación técnica en Markdown, abierta a todo el mundo.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <a href="mailto:info@docs-mng.com">info@docs-mng.com</a>
+        <a href="#" data-action="contact" data-kind="request">Solicitar documentación</a>
+        <a href="#" data-action="contact" data-kind="doubt">Dudas sobre documentación</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#" data-legal="privacidad">Política de privacidad</a>
+        <a href="#" data-legal="aviso">Aviso legal</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span id="footer-year"></span> DOCS-MNG. Todos los derechos reservados.
+    </div>
+  </footer>
+  
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
